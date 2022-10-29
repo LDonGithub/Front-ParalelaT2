@@ -85,18 +85,67 @@ async function CrearPokemon(data){
     cardbody.appendChild(nombre)
     cardbody.appendChild(caras)
     contenendor.appendChild(card);
-
-
-
-
 }
 
 let pokemonsList = document.getElementById("pokemons-list");
 let links = document.getElementById("links");
 
+cont = 1;
+
+async function paginacion(url){
+  pokemonsList.innerHTML = "";
+  if(url){
+      for(i = cont; i < cont+10; i++){
+        await fetch(url+`${i}`)
+        .then(info => info.json())
+        .then(prom => {
+          console.log(prom);
+          console.log(prom.abilities);
+  
+          let tipo = "";
+          let habilidades = "";
+          prom.abilities.forEach(element => {
+              habilidades+= `${element.ability.name} <br>`;
+          });
+
+          if(prom.types.length>1){
+              tipo = `${prom.types[0].type.name} & ${prom.types[1].type.name}`;
+          }else{
+              tipo = `${prom.types[0].type.name}`
+          }
+
+          pokemonsList.innerHTML += `
+          <div class="card mb-3 col-6 " style="max-width: 540px;">
+            <div class="row g-0 p-2">
+              <div class="col-md-4">
+                <img src="${prom.sprites.front_default}" class="img-fluid rounded-start" alt="">
+              </div>
+              <div class="col-md-8">
+                <div class="card-body">
+                  <h5 class="card-title text-capitalize">${prom.name}</h5>
+                  <p class="text-capitalize">ID: ${prom.id}<br> Altura: ${prom.height} <br>Peso: ${prom.weight} <br>Tipo: ${tipo}<br>Habilidades: <br> ${habilidades} </p>
+                </div>
+              </div>
+            </div>
+          </div>
+          `;
+          
+        })
+      }
+      document.createElement
+      //links.innerHTML = (data.previous) ? `<button type="button" class="btn btn-primary m-5 justify-content-center" onclick="updatePokemons('${data.previous}')">Atrás</button>` : "";
+  }
+}
+
+paginacion(`http://localhost:8080/id/`);
+
+function siguiente(){
+  cont=cont+10;
+  paginacion(`http://localhost:8080/id/`);
+}
 
 
-function updatePokemons(url) {
+/*function updatePokemons(url) {
   if (url) {
 
     //Reiniciamos pokemones actuales
@@ -132,20 +181,20 @@ function updatePokemons(url) {
 
                 
 
-              pokemonsList.innerHTML += `
-<div class="card mb-3 col-6 " style="max-width: 540px;">
-  <div class="row g-0 p-2">
-    <div class="col-md-4">
-      <img src="${x.sprites.front_default}" class="img-fluid rounded-start" alt="">
-    </div>
-    <div class="col-md-8">
-      <div class="card-body">
-        <h5 class="card-title text-capitalize">${x.name}</h5>
-        <p class="text-capitalize">ID: ${x.id}<br> Altura: ${x.height} <br>Peso: ${x.weight} <br>Tipo: ${tipo}<br>Habilidades: <br> ${habilidades} </p>
-      </div>
-    </div>
-  </div>
-</div>
+                pokemonsList.innerHTML += `
+                <div class="card mb-3 col-6 " style="max-width: 540px;">
+                  <div class="row g-0 p-2">
+                    <div class="col-md-4">
+                      <img src="${x.sprites.front_default}" class="img-fluid rounded-start" alt="">
+                    </div>
+                    <div class="col-md-8">
+                      <div class="card-body">
+                        <h5 class="card-title text-capitalize">${x.name}</h5>
+                        <p class="text-capitalize">ID: ${x.id}<br> Altura: ${x.height} <br>Peso: ${x.weight} <br>Tipo: ${tipo}<br>Habilidades: <br> ${habilidades} </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
                                               
                                               
                                         
@@ -156,17 +205,17 @@ function updatePokemons(url) {
                                               
                                               
                                               `;
-            });
-        };
-        // Pintamos los enlaces de siguiente o anterior de la paginacion de los pokemones 
-        //Boton hacia atrás
-        links.innerHTML = (res.previous) ? `<button type="button" class="btn btn-primary m-5 justify-content-center" onclick="updatePokemons('${res.previous}')">Atrás</button>` : "";
-        //Botón hacia adelante
-        links.innerHTML += (res.next) ? `<button type="button" class="btn btn-primary m-5 justify-content-center" onclick="updatePokemons('${res.next}')">Siguiente</button>` : "";
+                      });
+                  };
+                  // Pintamos los enlaces de siguiente o anterior de la paginacion de los pokemones 
+                  //Boton hacia atrás
+                  links.innerHTML = (res.previous) ? `<button type="button" class="btn btn-primary m-5 justify-content-center" onclick="updatePokemons('${res.previous}')">Atrás</button>` : "";
+                  //Botón hacia adelante
+                  links.innerHTML += (res.next) ? `<button type="button" class="btn btn-primary m-5 justify-content-center" onclick="updatePokemons('${res.next}')">Siguiente</button>` : "";
 
       });
   }
 
 }
 
-updatePokemons("https://pokeapi.co/api/v2/pokemon");
+updatePokemons("https://pokeapi.co/api/v2/pokemon");*/
